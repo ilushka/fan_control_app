@@ -15,24 +15,24 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/test"
+            android:scaleType="center"
+            android:src="@drawable/wind"
+            android:layout_weight="1"
+            />
+        
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="center"
+            android:src="@drawable/ocean"
             android:layout_weight="1"
             />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/test"
-            android:layout_weight="1"
-            />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/test"
+            android:scaleType="center"
+            android:src="@drawable/mountains"
             android:layout_weight="1"
             />
 
