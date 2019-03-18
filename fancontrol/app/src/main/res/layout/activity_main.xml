@@ -18,14 +18,18 @@
             android:scaleType="center"
             android:src="@drawable/wind"
             android:layout_weight="1"
+            android:id="@+id/wind_button"
+            android:clickable="true"
             />
-        
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="center"
             android:src="@drawable/ocean"
             android:layout_weight="1"
+            android:id="@+id/ocean_button"
+            android:clickable="true"
             />
 
         <ImageView
@@ -34,6 +38,8 @@
             android:scaleType="center"
             android:src="@drawable/mountains"
             android:layout_weight="1"
+            android:id="@+id/mountains_button"
+            android:clickable="true"
             />
 
     </LinearLayout>
