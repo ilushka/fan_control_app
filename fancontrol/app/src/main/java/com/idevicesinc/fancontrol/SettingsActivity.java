@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
+import com.skydoves.colorpickerpreference.ColorEnvelope;
+import com.skydoves.colorpickerpreference.ColorListener;
+import com.skydoves.colorpickerpreference.ColorPickerView;
+
 public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +28,11 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.ocean_button:
                 bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ocean);
                 break;
-            case R.id.mountains_button:
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mountains);
+            case R.id.forest_button:
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.forest);
                 break;
-            case R.id.wind_button:
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.wind);
+            case R.id.sunset_button:
+                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sunset);
                 break;
         }
         int bitmapWidth = bitmap.getWidth();
@@ -45,5 +49,14 @@ public class SettingsActivity extends AppCompatActivity {
         */
 
         // findViewById(R.id.fan_speed).setPadding(15, 0, 15, 0);
+
+        ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
+        colorPickerView.setColorListener(new ColorListener() {
+            @Override
+                public void onColorSelected(ColorEnvelope colorEnvelope) {
+                  //colorEnvelope.getColorRGB();
+            }
+        });
+
     }
 }

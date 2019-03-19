@@ -16,9 +16,9 @@
             android:scaleType="centerCrop"
             android:alpha="0.3"
             android:id="@+id/settings_background"
-            />
+            android:contentDescription="TODO" />
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -28,7 +28,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:text="FAN CONTROL"
                 android:textSize="20sp"
                 android:layout_marginTop="50dp"
@@ -70,6 +69,22 @@
                 android:thumb="@drawable/slider_thumb"
                 android:splitTrack="false"
                 android:thumbOffset="0dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="70dp"
+                android:text="COLOR"
+                android:textSize="20sp" />
+
+            <com.skydoves.colorpickerpreference.ColorPickerView
+                android:id="@+id/colorPickerView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginStart="100dp"
+                app:palette="@drawable/palette"
+                app:selector="@drawable/wheel" />
 
         </LinearLayout>
     </FrameLayout>
