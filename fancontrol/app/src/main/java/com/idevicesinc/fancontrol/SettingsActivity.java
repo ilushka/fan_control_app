@@ -38,12 +38,5 @@ public class SettingsActivity extends AppCompatActivity {
         Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, screenHeight, true);
         ImageView bgImage = (ImageView) findViewById(R.id.settings_background);
         bgImage.setImageBitmap(newBitmap);
-
-        /*
-        SeekBar seekBar = (SeekBar) findViewById(R.id.fan_speed);
-        seekBar.setThumbOffset(0);
-        */
-
-        // findViewById(R.id.fan_speed).setPadding(15, 0, 15, 0);
     }
 }
