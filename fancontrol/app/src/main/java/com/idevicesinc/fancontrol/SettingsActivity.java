@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 public class SettingsActivity extends AppCompatActivity {
     @Override
@@ -15,6 +16,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        // set background of activity
         Intent intent = getIntent();
         int theme = intent.getIntExtra(MainActivity.EXTRA_THEME_ID, 0);
         Bitmap bitmap = null;
@@ -36,5 +38,12 @@ public class SettingsActivity extends AppCompatActivity {
         Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, screenHeight, true);
         ImageView bgImage = (ImageView) findViewById(R.id.settings_background);
         bgImage.setImageBitmap(newBitmap);
+
+        /*
+        SeekBar seekBar = (SeekBar) findViewById(R.id.fan_speed);
+        seekBar.setThumbOffset(0);
+        */
+
+        // findViewById(R.id.fan_speed).setPadding(15, 0, 15, 0);
     }
 }
