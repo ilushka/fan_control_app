@@ -78,12 +78,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sendThemeFromPreferences(int theme) {
-        int spray = sharedPreferences.getInt(SettingsActivity.getPrefNameForSprayPeriod(theme),
-                        SettingsActivity.getDefaultForSprayPeriod(theme));
-        int fan = sharedPreferences.getInt(SettingsActivity.getPrefNameForFanSpeed(theme),
-                        SettingsActivity.getDefaultForFanSpeed(theme));
-        int color = sharedPreferences.getInt(SettingsActivity.getPrefNameForColor(theme),
-                        SettingsActivity.getDefaultForColor(theme));
-        UDPClientService.sendTheme(MainActivity.this, color, (byte)fan, spray);
+        byte spray = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForSprayPeriod(theme),
+                SettingsActivity.getDefaultForSprayPeriod(theme)) & 0xff);
+        byte fan = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForFanSpeed(theme),
+                SettingsActivity.getDefaultForFanSpeed(theme)) & 0xff);
+        long color = (long)(sharedPreferences.getInt(SettingsActivity.getPrefNameForColor(theme),
+                (int)SettingsActivity.getDefaultForColor(theme)) & 0xffffff);
+        UDPClientService.sendTheme(MainActivity.this, color, fan,
+                SettingsActivity.sprayPeriodToLong(spray, theme), (byte)0);
     }
 }

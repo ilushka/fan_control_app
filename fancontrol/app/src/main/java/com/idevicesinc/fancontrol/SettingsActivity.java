@@ -1,19 +1,13 @@
 package com.idevicesinc.fancontrol;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
-import java.util.Set;
 import com.skydoves.colorpickerpreference.ColorEnvelope;
 import com.skydoves.colorpickerpreference.ColorListener;
 import com.skydoves.colorpickerpreference.ColorPickerView;
@@ -22,7 +16,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String TAG = "SettingsActivity";
 
     public static final String EXTRA_THEME_ID = "com.idevicesinc.fancontrol.THEME_ID";
-    
+
+    // names of preferences for each theme
     public static final String PREF_OCEAN_SPRAY = "com.idevicesinc.fancontrol.preferences.OCEAN_SPRAY";
     public static final String PREF_OCEAN_FAN = "com.idevicesinc.fancontrol.preferences.OCEAN_FAN";
     public static final String PREF_OCEAN_COLOR = "com.idevicesinc.fancontrol.preferences.OCEAN_COLOR";
@@ -32,23 +27,23 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREF_SUNSET_SPRAY = "com.idevicesinc.fancontrol.preferences.SUNSET_SPRAY";
     public static final String PREF_SUNSET_FAN = "com.idevicesinc.fancontrol.preferences.SUNSET_FAN";
     public static final String PREF_SUNSET_COLOR = "com.idevicesinc.fancontrol.preferences.SUNSET_COLOR";
-    
-    public static final int DEFAULT_OCEAN_SPRAY = 50;
-    public static final int DEFAULT_OCEAN_FAN = 50;
-    public static final int DEFAULT_OCEAN_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_FOREST_SPRAY = 50;
-    public static final int DEFAULT_FOREST_FAN = 50;
-    public static final int DEFAULT_FOREST_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_SUNSET_SPRAY = 50;
-    public static final int DEFAULT_SUNSET_FAN = 50;
-    public static final int DEFAULT_SUNSET_COLOR = 0xFFFFFF;
+
+    // preferences defaults for each theme
+    public static final byte DEFAULT_OCEAN_SPRAY = 0x7F;
+    public static final byte DEFAULT_OCEAN_FAN = 0x7F;
+    public static final long DEFAULT_OCEAN_COLOR = 0xFFFFFF;
+    public static final byte DEFAULT_FOREST_SPRAY = 0x7F;
+    public static final byte DEFAULT_FOREST_FAN = 0x7F;
+    public static final long DEFAULT_FOREST_COLOR = 0xFFFFFF;
+    public static final byte DEFAULT_SUNSET_SPRAY = 0x7F;
+    public static final byte DEFAULT_SUNSET_FAN = 0x7F;
+    public static final long DEFAULT_SUNSET_COLOR = 0xFFFFFF;
 
     private SharedPreferences sharedPreferences;
-    private long fanSpeed;
-    private long sprayPeriod;
+    private byte fanSpeed;
+    private byte sprayPeriod;
     private long color;
     private int theme;
-
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,25 +78,31 @@ public class SettingsActivity extends AppCompatActivity {
 
         // initialize widgets based on stored preferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-        sprayPeriod = sharedPreferences.getInt(SettingsActivity.getPrefNameForSprayPeriod(theme),
-                SettingsActivity.getDefaultForSprayPeriod(theme));
-        fanSpeed = sharedPreferences.getInt(SettingsActivity.getPrefNameForFanSpeed(theme),
-                SettingsActivity.getDefaultForFanSpeed(theme));
-        color = sharedPreferences.getInt(SettingsActivity.getPrefNameForColor(theme),
-                SettingsActivity.getDefaultForColor(theme));
+        sprayPeriod = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForSprayPeriod(theme),
+                SettingsActivity.getDefaultForSprayPeriod(theme)) & 0xff);
+        fanSpeed = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForFanSpeed(theme),
+                SettingsActivity.getDefaultForFanSpeed(theme)) & 0xff);
+        color = (long)(sharedPreferences.getInt(SettingsActivity.getPrefNameForColor(theme),
+                (int)SettingsActivity.getDefaultForColor(theme)) & 0x00ffffff);
         SeekBar fanBar = (SeekBar) findViewById(R.id.fan_speed);
-        fanBar.setProgress((int)fanSpeed);
+        fanBar.setProgress(fanSpeed & 0xff);
         SeekBar sprayBar = (SeekBar) findViewById(R.id.spray_period);
-        sprayBar.setProgress((int)(256 - sprayPeriod));
+        Log.d(TAG, "onCreate: sprayPeriod: " + Integer.toHexString((int)sprayPeriod) + ", fanSpeed: " +
+                Integer.toHexString((int)fanSpeed) + ", color: " + Integer.toHexString((int)color));
+        if (sprayPeriod == 0) {
+            sprayBar.setProgress(0);
+        } else {
+            sprayBar.setProgress((byte)(256 - sprayPeriod) & 0xff);
+        }
 
         // add listeners to seek bars
         sprayBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (progress > 0) {
-                    sprayPeriod = 256 - progress;
+                    sprayPeriod = (byte)((256 - progress) & 0xff);
                 } else {
-                    sprayPeriod = progress;
+                    sprayPeriod = 0;
                 }
             }
 
@@ -118,7 +119,7 @@ public class SettingsActivity extends AppCompatActivity {
         fanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                fanSpeed = progress;
+                fanSpeed = (byte)progress;
             }
 
             @Override
@@ -178,7 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
         return "";
     }
 
-    static int getDefaultForSprayPeriod(int theme) {
+    static byte getDefaultForSprayPeriod(int theme) {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_SPRAY;
@@ -190,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
         return 0;
     }
 
-    static int getDefaultForFanSpeed(int theme) {
+    static byte getDefaultForFanSpeed(int theme) {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_FAN;
@@ -202,7 +203,7 @@ public class SettingsActivity extends AppCompatActivity {
         return 0;
     }
 
-    static int getDefaultForColor(int theme) {
+    static long getDefaultForColor(int theme) {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_COLOR;
@@ -224,6 +225,19 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     void sendThemeOverUDP() {
-        UDPClientService.sendTheme(SettingsActivity.this, color, (byte)fanSpeed, sprayPeriod);
+        UDPClientService.sendTheme(SettingsActivity.this, color, fanSpeed,
+                sprayPeriodToLong(sprayPeriod, theme), (byte)0);
+    }
+
+    public static long sprayPeriodToLong(byte sprayPeriod, int theme) {
+        switch (theme) {
+            case R.id.sunset_button:
+                return ((sprayPeriod << 16) & 0x00FF0000);
+            case R.id.ocean_button:
+                return ((sprayPeriod <<  8) & 0x0000FF00);
+            case R.id.forest_button:
+                return ((sprayPeriod <<  0) & 0x000000FF);
+        }
+        return 0;
     }
 }

@@ -29,9 +29,20 @@ public class UDPClientService extends IntentService {
 
     public static final String EXTRA_MESSAGE = "com.idevicesinc.fancontrol.extra.MESSAGE";
 
-    public static final int MESSAGE_SIZE = 7;   // in bytes
+    /*
+    udp packet structure:
+
+    typedef struct {
+        uint8_t rgb[3];
+        uint8_t fan_speed;
+        uint8_t spray_period[3];
+        uint8_t music;
+    } packet;
+     */
+
+    public static final int MESSAGE_SIZE = 8;   // in bytes
     public static final String DEFAULT_DEVICE_IP = "192.168.1.101";
-    public static final int DEFAULT_DEVICE_PORT = 666;
+    public static final int DEFAULT_DEVICE_PORT = 6666;
 
     private DatagramSocket socket;
     private InetAddress address;
@@ -49,6 +60,7 @@ public class UDPClientService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(UDPClientService.this);
         String addrStr = sharedPreferences.getString(PREF_DEVICE_IP, DEFAULT_DEVICE_IP);
         port = sharedPreferences.getInt(PREF_DEVICE_PORT, DEFAULT_DEVICE_PORT);
+        Log.d(TAG, "addr: " + addrStr + ", port: " + port);
 
         try {
             socket = new DatagramSocket(port);
@@ -88,7 +100,7 @@ public class UDPClientService extends IntentService {
         return str;
     }
 
-    static public void sendTheme(Context context, long rgb, byte fanSpeed, long sprayPeriod) {
+    static public void sendTheme(Context context, long rgb, byte fanSpeed, long sprayPeriod, byte musicEnabled) {
         Intent intent = new Intent(context, UDPClientService.class);
         byte[] buf = new byte[MESSAGE_SIZE];
         buf[0] = (byte)((rgb >> 16) & 0xff);
@@ -98,6 +110,7 @@ public class UDPClientService extends IntentService {
         buf[4] = (byte)((sprayPeriod >> 16) & 0xff);
         buf[5] = (byte)((sprayPeriod >>  8) & 0xff);
         buf[6] = (byte)((sprayPeriod >>  0) & 0xff);
+        buf[7] = musicEnabled;
         intent.putExtra(EXTRA_MESSAGE, buf);
         context.startService(intent);
     }
