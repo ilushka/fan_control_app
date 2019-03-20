@@ -17,6 +17,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         // set background of activity
+        /* MONKEY:
         Intent intent = getIntent();
         int theme = intent.getIntExtra(MainActivity.EXTRA_THEME_ID, 0);
         Bitmap bitmap = null;
@@ -38,5 +39,6 @@ public class SettingsActivity extends AppCompatActivity {
         Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, screenHeight, true);
         ImageView bgImage = (ImageView) findViewById(R.id.settings_background);
         bgImage.setImageBitmap(newBitmap);
+        */
     }
 }

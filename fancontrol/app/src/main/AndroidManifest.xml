@@ -17,6 +17,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"></activity>
+
+        <!--
+            Because android:exported is set to "false",
+            the service is only available to this app.
+        -->
+        <service android:name=".UDPClientService"
+            android:exported="false"/>
+        
     </application>
+    
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 
 </manifest>
