@@ -11,6 +11,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 /**
@@ -21,6 +23,7 @@ public class UDPClientService extends IntentService {
     public static final String TAG = "UDPClientService";
 
     public static final String EXTRA_MESSAGE = "com.idevicesinc.fancontrol.extra.MESSAGE";
+    public static final int MESSAGE_SIZE = 7;   // in bytes
 
     private DatagramSocket socket;
     private InetAddress address;
@@ -52,35 +55,38 @@ public class UDPClientService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        byte[] buf = intent.getStringExtra(EXTRA_MESSAGE).getBytes();
+        byte[] buf = intent.getByteArrayExtra(EXTRA_MESSAGE);
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         try {
             socket.send(packet);
-            Log.d(TAG, "sent: " + Arrays.toString(buf));
+            Log.d(TAG, "sent: " + byteBufferToString(buf));
         } catch (IOException e) {
             Log.e(TAG, "IOException", e);
         }
     }
 
-    static public void sendMessage(Context context, String message) {
+    String byteBufferToString(byte[] buf) {
+        String str = "";
+        for (byte b : buf) {
+            if (str.length() > 0) {
+                str += ", ";
+            }
+            str += Long.toHexString(((long)b & 0xff));
+        }
+        return str;
+    }
+
+    static public void sendTheme(Context context, long rgb, byte fanSpeed, long sprayPeriod) {
         Intent intent = new Intent(context, UDPClientService.class);
-        intent.putExtra(EXTRA_MESSAGE, message);
+        byte[] buf = new byte[MESSAGE_SIZE];
+        buf[0] = (byte)((rgb >> 16) & 0xff);
+        buf[1] = (byte)((rgb >>  8) & 0xff);
+        buf[2] = (byte)((rgb >>  0) & 0xff);
+        buf[3] = fanSpeed;
+        buf[4] = (byte)((sprayPeriod >> 16) & 0xff);
+        buf[5] = (byte)((sprayPeriod >>  8) & 0xff);
+        buf[6] = (byte)((sprayPeriod >>  0) & 0xff);
+        intent.putExtra(EXTRA_MESSAGE, buf);
         context.startService(intent);
     }
-
-    /* MONKEY:
-    public UDPClientS() throws SocketException, UnknownHostException {
-
-    }
-
-    public void send(String str) throws IOException {
-        byte[] buf = str.getBytes();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
-        socket.send(packet);
-    }
-
-    public void close() {
-
-    }
-    */
 }
