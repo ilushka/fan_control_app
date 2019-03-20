@@ -36,8 +36,8 @@
 
             <SeekBar
                 android:id="@+id/fan_speed"
-                android:max="100"
-                android:progress="50"
+                android:max="255"
+                android:progress="123"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -59,8 +59,8 @@
 
             <SeekBar
                 android:id="@+id/spray_period"
-                android:max="100"
-                android:progress="50"
+                android:max="255"
+                android:progress="123"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
