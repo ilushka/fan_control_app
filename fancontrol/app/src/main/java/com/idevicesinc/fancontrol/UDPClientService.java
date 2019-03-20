@@ -3,6 +3,8 @@ package com.idevicesinc.fancontrol;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -22,8 +24,14 @@ import java.util.Arrays;
 public class UDPClientService extends IntentService {
     public static final String TAG = "UDPClientService";
 
+    public static final String PREF_DEVICE_IP = "com.idevicesinc.fancontrol.preferences.DEVICE_IP";
+    public static final String PREF_DEVICE_PORT = "com.idevicesinc.fancontrol.preferences.DEVICE_PORT";
+
     public static final String EXTRA_MESSAGE = "com.idevicesinc.fancontrol.extra.MESSAGE";
+
     public static final int MESSAGE_SIZE = 7;   // in bytes
+    public static final String DEFAULT_DEVICE_IP = "192.168.1.101";
+    public static final int DEFAULT_DEVICE_PORT = 666;
 
     private DatagramSocket socket;
     private InetAddress address;
@@ -37,10 +45,14 @@ public class UDPClientService extends IntentService {
     public void onCreate() {
         super.onCreate();
 
+        // retrieve preferences for the udp client service
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(UDPClientService.this);
+        String addrStr = sharedPreferences.getString(PREF_DEVICE_IP, DEFAULT_DEVICE_IP);
+        port = sharedPreferences.getInt(PREF_DEVICE_PORT, DEFAULT_DEVICE_PORT);
+
         try {
-            port = 5555;
             socket = new DatagramSocket(port);
-            address = InetAddress.getByName("192.168.1.101");
+            address = InetAddress.getByName(addrStr);
         } catch (SocketException e) {
             Log.e(TAG, "SocketException", e);
         } catch (UnknownHostException e) {

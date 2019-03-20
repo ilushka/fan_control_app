@@ -7,6 +7,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -57,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
                         drawerLayout.closeDrawers();
-
-
+                        if (menuItem.getItemId() == R.id.item_settings) {
+                            startSecretConfigActivity();
+                        }
                         return true;
                     }
                 });
@@ -67,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
     void startSettingsActivity(int id) {
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra(SettingsActivity.EXTRA_THEME_ID, id);
+        startActivity(intent);
+    }
+
+    void startSecretConfigActivity() {
+        Intent intent = new Intent(this, SecretConfigActivity.class);
         startActivity(intent);
     }
 
