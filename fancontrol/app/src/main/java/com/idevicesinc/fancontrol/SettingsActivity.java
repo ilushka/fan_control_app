@@ -26,22 +26,22 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREF_OCEAN_SPRAY = "com.idevicesinc.fancontrol.preferences.OCEAN_SPRAY";
     public static final String PREF_OCEAN_FAN = "com.idevicesinc.fancontrol.preferences.OCEAN_FAN";
     public static final String PREF_OCEAN_COLOR = "com.idevicesinc.fancontrol.preferences.OCEAN_COLOR";
-    public static final String PREF_MOUNTAINS_SPRAY = "com.idevicesinc.fancontrol.preferences.MOUNTAINS_SPRAY";
-    public static final String PREF_MOUNTAINS_FAN = "com.idevicesinc.fancontrol.preferences.MOUNTAINS_FAN";
-    public static final String PREF_MOUNTAINS_COLOR = "com.idevicesinc.fancontrol.preferences.MOUNTAINS_COLOR";
-    public static final String PREF_WIND_SPRAY = "com.idevicesinc.fancontrol.preferences.WIND_SPRAY";
-    public static final String PREF_WIND_FAN = "com.idevicesinc.fancontrol.preferences.WIND_FAN";
-    public static final String PREF_WIND_COLOR = "com.idevicesinc.fancontrol.preferences.WIND_COLOR";
+    public static final String PREF_FOREST_SPRAY = "com.idevicesinc.fancontrol.preferences.FOREST_SPRAY";
+    public static final String PREF_FOREST_FAN = "com.idevicesinc.fancontrol.preferences.FOREST_FAN";
+    public static final String PREF_FOREST_COLOR = "com.idevicesinc.fancontrol.preferences.FOREST_COLOR";
+    public static final String PREF_SUNSET_SPRAY = "com.idevicesinc.fancontrol.preferences.SUNSET_SPRAY";
+    public static final String PREF_SUNSET_FAN = "com.idevicesinc.fancontrol.preferences.SUNSET_FAN";
+    public static final String PREF_SUNSET_COLOR = "com.idevicesinc.fancontrol.preferences.SUNSET_COLOR";
     
     public static final int DEFAULT_OCEAN_SPRAY = 50;
     public static final int DEFAULT_OCEAN_FAN = 50;
     public static final int DEFAULT_OCEAN_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_MOUNTAINS_SPRAY = 50;
-    public static final int DEFAULT_MOUNTAINS_FAN = 50;
-    public static final int DEFAULT_MOUNTAINS_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_WIND_SPRAY = 50;
-    public static final int DEFAULT_WIND_FAN = 50;
-    public static final int DEFAULT_WIND_COLOR = 0xFFFFFF;
+    public static final int DEFAULT_FOREST_SPRAY = 50;
+    public static final int DEFAULT_FOREST_FAN = 50;
+    public static final int DEFAULT_FOREST_COLOR = 0xFFFFFF;
+    public static final int DEFAULT_SUNSET_SPRAY = 50;
+    public static final int DEFAULT_SUNSET_FAN = 50;
+    public static final int DEFAULT_SUNSET_COLOR = 0xFFFFFF;
 
     private SharedPreferences sharedPreferences;
     private long fanSpeed;
@@ -131,16 +131,25 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
         });
+
+        // color picker
+        ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
+        colorPickerView.setColorListener(new ColorListener() {
+            @Override
+            public void onColorSelected(ColorEnvelope colorEnvelope) {
+                //colorEnvelope.getColorRGB();
+            }
+        });
     }
 
     static String getPrefNameForSprayPeriod(int theme) {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.PREF_OCEAN_SPRAY;
-            case R.id.mountains_button:
-                return SettingsActivity.PREF_MOUNTAINS_SPRAY;
-            case R.id.wind_button:
-                return SettingsActivity.PREF_WIND_SPRAY;
+            case R.id.forest_button:
+                return SettingsActivity.PREF_FOREST_SPRAY;
+            case R.id.sunset_button:
+                return SettingsActivity.PREF_SUNSET_SPRAY;
         }
         return "";
     }
@@ -149,10 +158,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.PREF_OCEAN_FAN;
-            case R.id.mountains_button:
-                return SettingsActivity.PREF_MOUNTAINS_FAN;
-            case R.id.wind_button:
-                return SettingsActivity.PREF_WIND_FAN;
+            case R.id.forest_button:
+                return SettingsActivity.PREF_FOREST_FAN;
+            case R.id.sunset_button:
+                return SettingsActivity.PREF_SUNSET_FAN;
         }
         return "";
     }
@@ -161,10 +170,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.PREF_OCEAN_COLOR;
-            case R.id.mountains_button:
-                return SettingsActivity.PREF_MOUNTAINS_COLOR;
-            case R.id.wind_button:
-                return SettingsActivity.PREF_WIND_COLOR;
+            case R.id.forest_button:
+                return SettingsActivity.PREF_FOREST_COLOR;
+            case R.id.sunset_button:
+                return SettingsActivity.PREF_SUNSET_COLOR;
         }
         return "";
     }
@@ -173,10 +182,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_SPRAY;
-            case R.id.mountains_button:
-                return SettingsActivity.DEFAULT_MOUNTAINS_SPRAY;
-            case R.id.wind_button:
-                return SettingsActivity.DEFAULT_WIND_SPRAY;
+            case R.id.forest_button:
+                return SettingsActivity.DEFAULT_FOREST_SPRAY;
+            case R.id.sunset_button:
+                return SettingsActivity.DEFAULT_SUNSET_SPRAY;
         }
         return 0;
     }
@@ -185,10 +194,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_FAN;
-            case R.id.mountains_button:
-                return SettingsActivity.DEFAULT_MOUNTAINS_FAN;
-            case R.id.wind_button:
-                return SettingsActivity.DEFAULT_WIND_FAN;
+            case R.id.forest_button:
+                return SettingsActivity.DEFAULT_FOREST_FAN;
+            case R.id.sunset_button:
+                return SettingsActivity.DEFAULT_SUNSET_FAN;
         }
         return 0;
     }
@@ -197,10 +206,10 @@ public class SettingsActivity extends AppCompatActivity {
         switch (theme) {
             case R.id.ocean_button:
                 return SettingsActivity.DEFAULT_OCEAN_COLOR;
-            case R.id.mountains_button:
-                return SettingsActivity.DEFAULT_MOUNTAINS_COLOR;
-            case R.id.wind_button:
-                return SettingsActivity.DEFAULT_WIND_COLOR;
+            case R.id.forest_button:
+                return SettingsActivity.DEFAULT_FOREST_COLOR;
+            case R.id.sunset_button:
+                return SettingsActivity.DEFAULT_SUNSET_COLOR;
         }
         return 0;
     }
@@ -213,17 +222,6 @@ public class SettingsActivity extends AppCompatActivity {
         editor.apply();
         Log.d(TAG, "storeThemeToPreferences: spray period: " + sprayPeriod + ", fanSpeed: " + fanSpeed + ", color: " + color);
     }
-/*
-        // findViewById(R.id.fan_speed).setPadding(15, 0, 15, 0);
-
-        ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
-        colorPickerView.setColorListener(new ColorListener() {
-            @Override
-                public void onColorSelected(ColorEnvelope colorEnvelope) {
-                  //colorEnvelope.getColorRGB();
-            }
-        });
-*/
 
     void sendThemeOverUDP() {
         UDPClientService.sendTheme(SettingsActivity.this, color, (byte)fanSpeed, sprayPeriod);

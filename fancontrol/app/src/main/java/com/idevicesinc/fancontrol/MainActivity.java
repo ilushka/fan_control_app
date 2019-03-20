@@ -41,12 +41,12 @@ public class MainActivity extends AppCompatActivity {
         ImageView ocean = (ImageView) findViewById(R.id.ocean_button);
         ocean.setOnClickListener(clickListener);
         ocean.setOnLongClickListener(longClickListener);
-        ImageView mountains = (ImageView) findViewById(R.id.mountains_button);
-        mountains.setOnClickListener(clickListener);
-        mountains.setOnLongClickListener(longClickListener);
-        ImageView wind = (ImageView) findViewById(R.id.wind_button);
-        wind.setOnClickListener(clickListener);
-        wind.setOnLongClickListener(longClickListener);
+        ImageView forest = (ImageView) findViewById(R.id.forest_button);
+        forest.setOnClickListener(clickListener);
+        forest.setOnLongClickListener(longClickListener);
+        ImageView sunset = (ImageView) findViewById(R.id.sunset_button);
+        sunset.setOnClickListener(clickListener);
+        sunset.setOnLongClickListener(longClickListener);
 
         // drawer stuff
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
