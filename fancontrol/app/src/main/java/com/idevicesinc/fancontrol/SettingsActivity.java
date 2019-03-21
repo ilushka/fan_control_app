@@ -3,9 +3,12 @@ package com.idevicesinc.fancontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 
 import com.skydoves.colorpickerpreference.ColorEnvelope;
@@ -21,6 +24,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREFERENCE_SPRAY_PERIOD = "com.idevicesinc.fancontrol.preferences.SPRAY_PERIOD";
     public static final String PREFERENCE_FAN_SPEED = "com.idevicesinc.fancontrol.preferences.FAN_SPEED";
     public static final String PREFERENCE_COLOR = "com.idevicesinc.fancontrol.preferences.COLOR";
+    public static final String PREFERENCE_COLOR_X = "com.idevicesinc.fancontrol.preferences.COLOR_X";
+    public static final String PREFERENCE_COLOR_Y = "com.idevicesinc.fancontrol.preferences.COLOR_Y";
 
     // preferences filename
     public static final String SUNSET_PREFERENCES = "com.idevicesinc.fancontrol.preferences.SUNSET_PREFERENCES";
@@ -31,6 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final byte DEFAULT_SPRAY_PERIOD = 0x7F;
     public static final byte DEFAULT_FAN_SPEED = 0x7F;
     public static final long DEFAULT_COLOR = 0xFFFFFF;
+    public static final int DEFAULT_COLOR_X = 400;
+    public static final int DEFAULT_COLOR_Y = 400;
 
     private SharedPreferences sharedPreferences;
     private byte fanSpeed;
@@ -46,35 +53,33 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         theme = intent.getIntExtra(SettingsActivity.EXTRA_THEME_ID, 0);
 
-        // set background of activity
-        /* MONKEY:
-        Bitmap bitmap = null;
+        // set background
+        PreloadedData preloadedData = PreloadedData.getInstance();
+        ImageView bgImage = (ImageView) findViewById(R.id.settings_background);
         switch (theme) {
             case R.id.ocean_button:
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ocean);
+                bgImage.setImageBitmap(preloadedData.oceanBackground);
                 break;
             case R.id.forest_button:
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.forest);
+                bgImage.setImageBitmap(preloadedData.forestBackground);
                 break;
             case R.id.sunset_button:
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sunset);
+                bgImage.setImageBitmap(preloadedData.sunsetBackground);
                 break;
         }
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
-        int screenHeight = getApplicationContext().getResources().getDisplayMetrics().heightPixels;
-        int newWidth = bitmapWidth * (screenHeight / bitmapHeight);
-        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, screenHeight, true);
-        ImageView bgImage = (ImageView) findViewById(R.id.settings_background);
-        bgImage.setImageBitmap(newBitmap);
-        */
 
-        // initialize widgets based on stored preferences
+        // load preferences
         sharedPreferences = SettingsActivity.this.getSharedPreferences(getThemePreferenceFilename(theme),
                 Context.MODE_PRIVATE);
         sprayPeriod = (byte)(sharedPreferences.getInt(PREFERENCE_SPRAY_PERIOD, DEFAULT_SPRAY_PERIOD) & 0xff);
         fanSpeed = (byte)(sharedPreferences.getInt(PREFERENCE_FAN_SPEED, DEFAULT_FAN_SPEED) & 0xff);
         color = (long)(sharedPreferences.getInt(PREFERENCE_COLOR, (int)DEFAULT_COLOR) & 0x00ffffff);
+        /*
+        colorX = sharedPreferences.getInt(PREFERENCE_COLOR_X, DEFAULT_COLOR_X);
+        colorY = sharedPreferences.getInt(PREFERENCE_COLOR_Y, DEFAULT_COLOR_Y);
+        */
+
+        // initialize widgets
         SeekBar fanBar = (SeekBar) findViewById(R.id.fan_speed);
         fanBar.setProgress(fanSpeed & 0xff);
         SeekBar sprayBar = (SeekBar) findViewById(R.id.spray_period);
@@ -86,15 +91,15 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: sprayPeriod: " + Integer.toHexString((int)sprayPeriod) + ", fanSpeed: " +
                 Integer.toHexString((int)fanSpeed) + ", color: " + Integer.toHexString((int)color));
 
-        // add color picker listener
-        ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
+        // initialize color picker widget
+        final ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
         colorPickerView.setACTON_UP(true);
         colorPickerView.setColorListener(new ColorListener() {
             private int ignoreColorPicks = 2;
             @Override
             public void onColorSelected(ColorEnvelope colorEnvelope) {
                 if (ignoreColorPicks == 0) {
-                    color = colorEnvelope.getColor() & 0xffffff;
+                    color = colorEnvelope.getColor() & 0x00ffffff;
                     Log.d(TAG, "onColorSelected: " + Integer.toHexString((int) (color & 0x00ffffff)));
                     storeThemeToPreference();
                     sendThemeOverUDP();
