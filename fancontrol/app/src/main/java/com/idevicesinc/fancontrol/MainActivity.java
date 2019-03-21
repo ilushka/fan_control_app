@@ -1,13 +1,12 @@
 package com.idevicesinc.fancontrol;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,15 +14,12 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
-    private SharedPreferences sharedPreferences;
     private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         // assign long and short press listeners to photos
         View.OnClickListener clickListener = new View.OnClickListener() {
@@ -78,12 +74,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sendThemeFromPreferences(int theme) {
-        byte spray = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForSprayPeriod(theme),
-                SettingsActivity.getDefaultForSprayPeriod(theme)) & 0xff);
-        byte fan = (byte)(sharedPreferences.getInt(SettingsActivity.getPrefNameForFanSpeed(theme),
-                SettingsActivity.getDefaultForFanSpeed(theme)) & 0xff);
-        long color = (long)(sharedPreferences.getInt(SettingsActivity.getPrefNameForColor(theme),
-                (int)SettingsActivity.getDefaultForColor(theme)) & 0xffffff);
+        SharedPreferences prefs = MainActivity.this.getSharedPreferences(
+                SettingsActivity.getThemePreferenceFilename(theme), Context.MODE_PRIVATE);
+        byte spray = (byte)(prefs.getInt(SettingsActivity.PREFERENCE_SPRAY_PERIOD,
+                SettingsActivity.DEFAULT_SPRAY_PERIOD) & 0xff);
+        byte fan = (byte)(prefs.getInt(SettingsActivity.PREFERENCE_FAN_SPEED,
+                SettingsActivity.DEFAULT_FAN_SPEED) & 0xff);
+        long color = (long)(prefs.getInt(SettingsActivity.PREFERENCE_COLOR,
+                (int)SettingsActivity.DEFAULT_COLOR) & 0xffffff);
         UDPClientService.sendTheme(MainActivity.this, color, fan,
                 SettingsActivity.sprayPeriodToLong(spray, theme), (byte)0);
     }

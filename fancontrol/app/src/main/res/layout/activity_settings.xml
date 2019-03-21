@@ -31,7 +31,8 @@
                 android:text="FAN CONTROL"
                 android:textSize="20sp"
                 android:layout_marginTop="50dp"
-                android:layout_marginLeft="50dp"/>
+                android:layout_marginLeft="50dp"
+                android:layout_gravity="center" />
 
             <SeekBar
                 android:id="@+id/fan_speed"
@@ -54,7 +55,8 @@
                 android:text="SPRAY PERIOD"
                 android:textSize="20sp"
                 android:layout_marginTop="70dp"
-                android:layout_marginLeft="50dp"/>
+                android:layout_marginLeft="50dp"
+                android:layout_gravity="center" />
 
             <SeekBar
                 android:id="@+id/spray_period"
@@ -76,15 +78,16 @@
                 android:layout_marginLeft="50dp"
                 android:layout_marginTop="70dp"
                 android:text="COLOR"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:layout_gravity="center" />
 
             <com.skydoves.colorpickerpreference.ColorPickerView
                 android:id="@+id/colorPickerView"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_marginStart="100dp"
                 app:palette="@drawable/palette"
-                app:selector="@drawable/wheel" />
+                app:selector="@drawable/wheel"
+                android:layout_gravity="center" />
 
         </LinearLayout>
     </FrameLayout>
