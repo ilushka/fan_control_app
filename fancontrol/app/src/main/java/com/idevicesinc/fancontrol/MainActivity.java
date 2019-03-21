@@ -3,8 +3,6 @@ package com.idevicesinc.fancontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -84,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                 SettingsActivity.DEFAULT_FAN_SPEED) & 0xff);
         long color = (long)(prefs.getInt(SettingsActivity.PREFERENCE_COLOR,
                 (int)SettingsActivity.DEFAULT_COLOR) & 0xffffff);
+        byte music = SettingsActivity.getMusicEnable(theme);
         UDPClientService.sendTheme(MainActivity.this, color, fan,
-                SettingsActivity.sprayPeriodToLong(spray, theme), (byte)0);
+                SettingsActivity.sprayPeriodToLong(spray, theme), music);
     }
 }

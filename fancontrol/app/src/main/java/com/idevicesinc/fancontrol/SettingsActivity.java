@@ -3,8 +3,6 @@ package com.idevicesinc.fancontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -164,7 +162,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     void sendThemeOverUDP() {
         UDPClientService.sendTheme(SettingsActivity.this, color, fanSpeed,
-                sprayPeriodToLong(sprayPeriod, theme), (byte)0);
+            sprayPeriodToLong(sprayPeriod, theme), getMusicEnable(theme));
     }
 
     public static long sprayPeriodToLong(byte sprayPeriod, int theme) {
@@ -189,5 +187,12 @@ public class SettingsActivity extends AppCompatActivity {
                 return FOREST_PREFERENCES;
         }
         return "";
+    }
+
+    public static byte getMusicEnable(int theme) {
+        if (theme == R.id.sunset_button) {
+            return 1;
+        }
+        return 0;
     }
 }
