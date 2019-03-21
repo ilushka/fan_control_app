@@ -31,7 +31,6 @@
                 android:text="FAN CONTROL"
                 android:textSize="20sp"
                 android:layout_marginTop="50dp"
-                android:layout_marginLeft="50dp"
                 android:layout_gravity="center" />
 
             <SeekBar
@@ -55,7 +54,6 @@
                 android:text="SPRAY PERIOD"
                 android:textSize="20sp"
                 android:layout_marginTop="70dp"
-                android:layout_marginLeft="50dp"
                 android:layout_gravity="center" />
 
             <SeekBar
@@ -73,9 +71,8 @@
                 android:thumbOffset="0dp" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
                 android:layout_marginTop="70dp"
                 android:text="COLOR"
                 android:textSize="20sp"
