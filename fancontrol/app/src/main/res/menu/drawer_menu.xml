@@ -3,6 +3,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/item_settings"
-            android:title="Settings" />
+            android:title="settings" />
     </group>
 </menu>

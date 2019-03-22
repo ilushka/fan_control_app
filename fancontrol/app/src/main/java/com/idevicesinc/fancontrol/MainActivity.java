@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import static android.content.Intent.FLAG_ACTIVITY_NO_ANIMATION;
+
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
@@ -63,6 +65,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationView nav = (NavigationView) findViewById(R.id.drawer);
+        int count = nav.getMenu().size();
+        for (int ii = 0; ii < count; ii++) {
+            nav.getMenu().getItem(ii).setChecked(false);
+        }
+    }
+
     void startSettingsActivity(int id) {
         Intent intent = new Intent(this, SettingsActivity.class);
         intent.putExtra(SettingsActivity.EXTRA_THEME_ID, id);
@@ -71,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     void startSecretConfigActivity() {
         Intent intent = new Intent(this, SecretConfigActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 
