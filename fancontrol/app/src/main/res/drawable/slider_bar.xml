@@ -12,20 +12,5 @@
     <item android:id="@android:id/progress"
         android:gravity="center_vertical|fill_horizontal"
         android:drawable="@android:color/transparent">
-        <!-- scale android:scaleWidth="100%">
-            <selector>
-                <item android:state_enabled="false"
-                    android:drawable="@android:color/transparent" />
-                <item>
-                    <shape android:shape="rectangle"
-                        android:tint="#2f87ed">
-                        <corners android:bottomLeftRadius="20dp"
-                            android:topLeftRadius="20dp" />
-                        <size android:height="30dp" />
-                        <solid android:color="#2f87ed" />
-                    </shape>
-                </item>
-            </selector>
-        </scale -->
     </item>
 </layer-list>

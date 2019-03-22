@@ -3,6 +3,7 @@ package com.idevicesinc.fancontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,11 +38,15 @@ public class SettingsActivity extends AppCompatActivity {
     public static final int DEFAULT_COLOR_X = 400;
     public static final int DEFAULT_COLOR_Y = 400;
 
+    public static final int COLOR_PICKER_RING_WIDTH = 20;   // in dp
+
     private SharedPreferences sharedPreferences;
     private byte fanSpeed;
     private byte sprayPeriod;
     private long color;
     private int theme;
+    private int pickerRingWidth;    // in px
+    private GradientDrawable ringDrawable;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +71,18 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
+        // data for changing color picker's ring color
+        pickerRingWidth = (int)(COLOR_PICKER_RING_WIDTH *
+                SettingsActivity.this.getResources().getDisplayMetrics().density);
+        ringDrawable = (GradientDrawable)((ImageView) findViewById(R.id.picker_ring)).getDrawable();
+
         // load preferences
         sharedPreferences = SettingsActivity.this.getSharedPreferences(getThemePreferenceFilename(theme),
                 Context.MODE_PRIVATE);
         sprayPeriod = (byte)(sharedPreferences.getInt(PREFERENCE_SPRAY_PERIOD, DEFAULT_SPRAY_PERIOD) & 0xff);
         fanSpeed = (byte)(sharedPreferences.getInt(PREFERENCE_FAN_SPEED, DEFAULT_FAN_SPEED) & 0xff);
         color = (long)(sharedPreferences.getInt(PREFERENCE_COLOR, (int)DEFAULT_COLOR) & 0x00ffffff);
-        /*
-        colorX = sharedPreferences.getInt(PREFERENCE_COLOR_X, DEFAULT_COLOR_X);
-        colorY = sharedPreferences.getInt(PREFERENCE_COLOR_Y, DEFAULT_COLOR_Y);
-        */
+        setColorPickerBackground(color);
 
         // initialize widgets
         SeekBar fanBar = (SeekBar) findViewById(R.id.fan_speed);
@@ -98,6 +105,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onColorSelected(ColorEnvelope colorEnvelope) {
                 if (ignoreColorPicks == 0) {
                     color = colorEnvelope.getColor() & 0x00ffffff;
+                    setColorPickerBackground(color);
                     Log.d(TAG, "onColorSelected: " + Integer.toHexString((int) (color & 0x00ffffff)));
                     storeThemeToPreference();
                     sendThemeOverUDP();
@@ -109,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         // add listeners to seek bars
         sprayBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -194,5 +203,9 @@ public class SettingsActivity extends AppCompatActivity {
             return 1;
         }
         return 0;
+    }
+
+    void setColorPickerBackground(long color) {
+        ringDrawable.setStroke(pickerRingWidth, (int)((0xff << 24) | (color & 0x00ffffff)));
     }
 }

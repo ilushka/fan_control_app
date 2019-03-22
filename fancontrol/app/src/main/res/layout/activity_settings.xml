@@ -15,8 +15,7 @@
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:alpha="0.3"
-            android:id="@+id/settings_background"
-            android:contentDescription="TODO" />
+            android:id="@+id/settings_background" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -78,13 +77,29 @@
                 android:textSize="20sp"
                 android:layout_gravity="center" />
 
-            <com.skydoves.colorpickerpreference.ColorPickerView
-                android:id="@+id/colorPickerView"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                app:palette="@drawable/palette"
-                app:selector="@drawable/wheel"
-                android:layout_gravity="center" />
+            <FrameLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_gravity="center" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/picker_ring"
+                    android:layout_gravity="center"
+                    android:src="@drawable/color_picker_ring"/>
+
+                <com.skydoves.colorpickerpreference.ColorPickerView
+                    android:id="@+id/colorPickerView"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    app:palette="@drawable/palette"
+                    app:selector="@drawable/wheel"
+                    android:layout_gravity="center" />
+
+            </FrameLayout>
 
         </LinearLayout>
     </FrameLayout>
