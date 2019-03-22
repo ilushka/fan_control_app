@@ -100,7 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Integer.toHexString((int)fanSpeed) + ", color: " + Integer.toHexString((int)color));
 
         // initialize color picker widget
-        final ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
+        final ColorPickerView colorPickerView = findViewById(R.id.colorPickerView);
         colorPickerView.setActionMode(ActionMode.ALWAYS);
         colorPickerView.setColorListener(new ColorListener() {
             @Override
