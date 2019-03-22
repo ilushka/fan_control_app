@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-import com.skydoves.colorpickerpreference.ColorEnvelope;
-import com.skydoves.colorpickerpreference.ColorListener;
-import com.skydoves.colorpickerpreference.ColorPickerView;
+import com.skydoves.colorpickerview.ActionMode;
+import com.skydoves.colorpickerview.ColorPickerView;
+import com.skydoves.colorpickerview.listeners.ColorListener;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String TAG = "SettingsActivity";
@@ -99,23 +101,25 @@ public class SettingsActivity extends AppCompatActivity {
 
         // initialize color picker widget
         final ColorPickerView colorPickerView = (ColorPickerView) findViewById(R.id.colorPickerView);
-        colorPickerView.setACTON_UP(true);
+        colorPickerView.setActionMode(ActionMode.ALWAYS);
         colorPickerView.setColorListener(new ColorListener() {
-            private int ignoreColorPicks = 2;
             @Override
-            public void onColorSelected(ColorEnvelope colorEnvelope) {
-                if (ignoreColorPicks == 0) {
-                    color = colorEnvelope.getColor() & 0x00ffffff;
+            public void onColorSelected(int inColor, boolean fromUser) {
+                if (fromUser) {
+                    color = inColor & 0x00ffffff;
                     setColorPickerBackground(color);
-                    Log.d(TAG, "onColorSelected: " + Integer.toHexString((int) (color & 0x00ffffff)));
+                }
+            }
+        });
+        colorPickerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     storeThemeToPreference();
                     sendThemeOverUDP();
-                } else {
-                    // NOTE: the way this color picker is designed it will fire two listener calls on init.
-                    // 1st when it sets coordinates of the selector, 2nd by design as "first pick".
-                    // we ignore these.
-                    ignoreColorPicks--;
+                    Log.d(TAG, "colorPickerView: MotionEvent.ACTION_UP: " + Integer.toHexString((int) (color & 0x00ffffff)));
                 }
+                return false;
             }
         });
 
@@ -157,6 +161,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // MONKEY:
+        ((ColorPickerView) findViewById(R.id.colorPickerView)).setCoordinate(300, 300);
     }
 
     void storeThemeToPreference() {
