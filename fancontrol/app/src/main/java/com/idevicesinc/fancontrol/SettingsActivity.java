@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -172,6 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
     void sendThemeOverUDP() {
         UDPClientService.sendTheme(SettingsActivity.this, color, fanSpeed,
             sprayPeriodToLong(sprayPeriod, theme), getMusicEnable(theme));
+        ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(50);
     }
 
     public static long sprayPeriodToLong(byte sprayPeriod, int theme) {
