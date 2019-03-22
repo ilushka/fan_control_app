@@ -3,6 +3,7 @@ package com.idevicesinc.fancontrol;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Vibrator;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,8 +39,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final byte DEFAULT_SPRAY_PERIOD = 0x7F;
     public static final byte DEFAULT_FAN_SPEED = 0x7F;
     public static final long DEFAULT_COLOR = 0xFFFFFF;
-    public static final int DEFAULT_COLOR_X = 400;
-    public static final int DEFAULT_COLOR_Y = 400;
+    public static final int DEFAULT_COLOR_X = 380;
+    public static final int DEFAULT_COLOR_Y = 380;
 
     public static final int COLOR_PICKER_RING_WIDTH = 20;   // in dp
 
@@ -50,6 +51,8 @@ public class SettingsActivity extends AppCompatActivity {
     private int theme;
     private int pickerRingWidth;    // in px
     private GradientDrawable ringDrawable;
+    private int pickerX;
+    private int pickerY;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +88,14 @@ public class SettingsActivity extends AppCompatActivity {
         sprayPeriod = (byte)(sharedPreferences.getInt(PREFERENCE_SPRAY_PERIOD, DEFAULT_SPRAY_PERIOD) & 0xff);
         fanSpeed = (byte)(sharedPreferences.getInt(PREFERENCE_FAN_SPEED, DEFAULT_FAN_SPEED) & 0xff);
         color = (long)(sharedPreferences.getInt(PREFERENCE_COLOR, (int)DEFAULT_COLOR) & 0x00ffffff);
+        pickerX = sharedPreferences.getInt(PREFERENCE_COLOR_X, DEFAULT_COLOR_X);
+        pickerY = sharedPreferences.getInt(PREFERENCE_COLOR_Y, DEFAULT_COLOR_Y);
         setColorPickerBackground(color);
 
         // initialize widgets
-        SeekBar fanBar = (SeekBar) findViewById(R.id.fan_speed);
+        SeekBar fanBar = findViewById(R.id.fan_speed);
         fanBar.setProgress(fanSpeed & 0xff);
-        SeekBar sprayBar = (SeekBar) findViewById(R.id.spray_period);
+        SeekBar sprayBar = findViewById(R.id.spray_period);
         if (sprayPeriod == 0) {
             sprayBar.setProgress(0);
         } else {
@@ -103,8 +108,16 @@ public class SettingsActivity extends AppCompatActivity {
         final ColorPickerView colorPickerView = findViewById(R.id.colorPickerView);
         colorPickerView.setActionMode(ActionMode.ALWAYS);
         colorPickerView.setColorListener(new ColorListener() {
+            private boolean setInitPosition = true;
             @Override
             public void onColorSelected(int inColor, boolean fromUser) {
+                if (setInitPosition) {
+                    colorPickerView.setCoordinate(pickerX, pickerY);
+                    setInitPosition = false;
+                }
+                Point p = colorPickerView.getSelectedPoint();
+                pickerX = p.x;
+                pickerY = p.y;
                 if (fromUser) {
                     color = inColor & 0x00ffffff;
                     setColorPickerBackground(color);
@@ -163,18 +176,13 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // MONKEY:
-        ((ColorPickerView) findViewById(R.id.colorPickerView)).setCoordinate(300, 300);
-    }
-
     void storeThemeToPreference() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(PREFERENCE_SPRAY_PERIOD, (int)sprayPeriod);
         editor.putInt(PREFERENCE_FAN_SPEED, (int) fanSpeed);
         editor.putInt(PREFERENCE_COLOR, (int)color);
+        editor.putInt(PREFERENCE_COLOR_X, pickerX);
+        editor.putInt(PREFERENCE_COLOR_Y, pickerY);
         editor.apply();
         Log.d(TAG, "storeThemeToPreferences: spray period: " + Integer.toHexString((sprayPeriod & 0xff)) +
                 ", fanSpeed: " + Integer.toHexString((fanSpeed & 0xff)) +
